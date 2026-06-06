@@ -142,7 +142,11 @@ const googleProvider = new firebase.auth.GoogleAuthProvider();
 
 /* ── LOCAL CACHE (fast UI updates) ── */
 function getU(){try{const d=localStorage.getItem('dn_u');return d?JSON.parse(d):null}catch{return null}}
-function saveU(u){localStorage.setItem('dn_u',JSON.stringify(u))}
+function saveU(u){
+  const safeU = {...u};
+  delete safeU.email;
+  localStorage.setItem('dn_u',JSON.stringify(safeU));
+}
 function clearU(){localStorage.removeItem('dn_u')}
 
 /* ── UPDATE NAVBAR ── */
