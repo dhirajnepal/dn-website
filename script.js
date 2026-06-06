@@ -104,7 +104,8 @@ function toast(msg,type='success'){
   const t=document.createElement('div');
   t.className='toast';
   const ic={success:'✅',info:'ℹ️',error:'❌',warn:'⚠️'};
-  t.innerHTML=`<span class="t-ic">${ic[type]||'ℹ️'}</span><span>${msg}</span><button class="t-cl" onclick="this.parentElement.remove()">✕</button>`;
+  t.innerHTML=`<span class="t-ic">${ic[type]||'ℹ️'}</span><span class="t-msg"></span><button class="t-cl" onclick="this.parentElement.remove()">✕</button>`;
+  t.querySelector('.t-msg').textContent = msg;
   w.appendChild(t);
   setTimeout(()=>t.classList.add('show'),10);
   setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),400)},4500);
@@ -280,7 +281,9 @@ async function doSignUp(){
     // Save to Firestore
     await db.collection('users').doc(uid).set(userData);
     // Cache locally
-    saveU({...userData,uid,joined:new Date().toISOString()});
+    const safeUserData = {...userData,uid,joined:new Date().toISOString()};
+    delete safeUserData.email; // Do not store email in localStorage to prevent clear-text storage
+    saveU(safeUserData);
     closeAuth();
     btn.textContent='Create Free Account';btn.disabled=false;
     if(chosenPlan!=='starter'){payNow(chosenPlan);}
