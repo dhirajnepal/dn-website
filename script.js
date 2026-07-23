@@ -442,7 +442,12 @@ addEventListener('mousemove',e=>{
 calcE();
 // Fetch backend status
 fetch('api.php?action=status')
-  .then(res => res.json())
+  .then(res => {
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}`);
+    }
+    return res.json();
+  })
   .then(data => {
     console.log('Backend Status:', data);
     // Optionally display it on the page if needed
